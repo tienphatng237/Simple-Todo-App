@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.todoapp.R;
 import com.example.todoapp.database.AppDatabase; // Ensure to import your AppDatabase
 import com.example.todoapp.model.Task;
+import com.example.todoapp.ui.EditTaskActivity;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private Context context;
     private List<Task> tasks;
 
-    public TaskAdapter(List<Task> tasks) {
+    public TaskAdapter(Context context, List<Task> tasks) {
         this.context = context;
         this.tasks = tasks;
     }
@@ -50,11 +52,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             notifyItemRangeChanged(position, tasks.size());
         });
 
+        // Checkbox functionality
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             task.completed = isChecked;
             AppDatabase.getInstance(context).taskDataAccess().update(task);
         });
 
+        // Item click to edit task
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EditTaskActivity.class);
+            intent.putExtra("taskId", task.id);
+            context.startActivity(intent);
+        });
     }
 
     @Override
