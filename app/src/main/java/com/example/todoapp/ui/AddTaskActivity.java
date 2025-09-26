@@ -12,6 +12,8 @@ import com.example.todoapp.R;
 import com.example.todoapp.database.AppDatabase;
 import com.example.todoapp.model.Task;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
 
 public class AddTaskActivity extends AppCompatActivity {
@@ -19,7 +21,7 @@ public class AddTaskActivity extends AppCompatActivity {
     private EditText etTitle, etDesc, etDeadline;
     private Button btnSave;
 
-    // Regex to validate the date format yyyy-mm-dd
+    // Regex to validate the format yyyy-mm-dd
     private static final Pattern DATE_PATTERN =
             Pattern.compile("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$");
 
@@ -57,6 +59,18 @@ public class AddTaskActivity extends AppCompatActivity {
         } else if (!DATE_PATTERN.matcher(deadline).matches()) {
             etDeadline.setError("Invalid format. Use yyyy-mm-dd");
             valid = false;
+        } else {
+            try {
+                LocalDate inputDate = LocalDate.parse(deadline);
+                LocalDate today = LocalDate.now();
+                if (inputDate.isBefore(today)) {
+                    etDeadline.setError("Deadline cannot be in the past");
+                    valid = false;
+                }
+            } catch (DateTimeParseException e) {
+                etDeadline.setError("Invalid date");
+                valid = false;
+            }
         }
 
         if (!valid) {
