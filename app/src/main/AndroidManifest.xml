@@ -7,20 +7,30 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="ToDoApp"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoApp"
         tools:targetApi="31">
+
+        <!-- AddTaskActivity ( add new task) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.AddTaskActivity"
+            android:exported="false" />
+
+        <!-- MainActivity -->
+        <activity
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.EditTaskActivity"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

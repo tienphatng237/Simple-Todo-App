@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="task_card_bg">#E3F2FD</color> <!-- xanh nhạt -->
+    <color name="task_title">#0D47A1</color>   <!-- xanh đậm -->
+    <color name="task_deadline">#546E7A</color> <!-- xám lạnh -->
+    <color name="fab_blue">#1976D2</color> <!-- xanh primary cho nút + -->
 </resources>
