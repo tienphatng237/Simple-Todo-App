@@ -28,6 +28,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.EditTaskActivity"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
