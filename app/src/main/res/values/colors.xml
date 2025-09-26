@@ -1,5 +1,6 @@
 <resources>
-    <color name="purple_500">#6200EE</color>
-    <color name="purple_700">#3700B3</color>
-    <color name="teal_200">#03DAC5</color>
+    <color name="task_card_bg">#E3F2FD</color> <!-- xanh nhạt -->
+    <color name="task_title">#0D47A1</color>   <!-- xanh đậm -->
+    <color name="task_deadline">#546E7A</color> <!-- xám lạnh -->
+    <color name="fab_blue">#1976D2</color> <!-- xanh primary cho nút + -->
 </resources>
