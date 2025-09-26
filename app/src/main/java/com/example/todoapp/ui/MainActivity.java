@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadTasks() {
         List<Task> tasks = AppDatabase.getInstance(this).taskDataAccess().getAllTasks();
-        adapter = new TaskAdapter(tasks);
+        adapter = new TaskAdapter(this, tasks);
         recyclerView.setAdapter(adapter);
     }
 }

@@ -5,12 +5,16 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.app.DatePickerDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.todoapp.R;
 import com.example.todoapp.database.AppDatabase;
 import com.example.todoapp.model.Task;
+
+import java.util.Calendar;
+
 
 public class EditTaskActivity extends AppCompatActivity {
 
@@ -28,6 +32,10 @@ public class EditTaskActivity extends AppCompatActivity {
         etDeadline = findViewById(R.id.et_deadline);
         btnUpdate = findViewById(R.id.btn_save);
         btnUpdate.setText("Update Task");
+
+        etDeadline.setFocusable(false);
+        etDeadline.setOnClickListener(v -> showDatePicker());
+
 
         // Get taskId from Intent
         int taskId = getIntent().getIntExtra("taskId", -1);
@@ -72,4 +80,24 @@ public class EditTaskActivity extends AppCompatActivity {
             finish();
         });
     }
+
+    private void showDatePicker() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, year1, month1, dayOfMonth) -> {
+                    // Format yyyy-MM-dd
+                    String date = String.format("%04d-%02d-%02d", year1, (month1 + 1), dayOfMonth);
+                    etDeadline.setText(date);
+                }, year, month, day);
+
+        // Do not allow selecting past dates
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
+        datePickerDialog.show();
+    }
+
 }

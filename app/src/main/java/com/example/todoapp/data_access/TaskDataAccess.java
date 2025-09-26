@@ -17,4 +17,8 @@ public interface TaskDataAccess {
 
     @Query("SELECT * FROM tasks ORDER BY id DESC")
     List<Task> getAllTasks();
+
+    @Query("SELECT * FROM tasks WHERE id = :taskId LIMIT 1")
+    Task getTaskById(int taskId);
+
 }
