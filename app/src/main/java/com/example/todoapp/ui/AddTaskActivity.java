@@ -24,8 +24,13 @@ public class AddTaskActivity extends AppCompatActivity {
             String desc = etDesc.getText().toString();
             String deadline = etDeadline.getText().toString();
 
+            // Create a new Task (completed = false by default)
             Task task = new Task(title, desc, deadline, false);
+
+            // Save to the database
             AppDatabase.getInstance(this).taskDataAccess().insert(task);
+
+            // Return to the previous screen
             finish();
         });
     }
