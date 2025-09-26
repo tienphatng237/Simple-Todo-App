@@ -1,18 +1,29 @@
 package com.example.todoapp.adapter;
 
-import android.view.*;
-import android.widget.*;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.todoapp.R;
+import com.example.todoapp.database.AppDatabase; // Ensure to import your AppDatabase
 import com.example.todoapp.model.Task;
+
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
+    private Context context;
     private List<Task> tasks;
 
     public TaskAdapter(List<Task> tasks) {
+        this.context = context;
         this.tasks = tasks;
     }
 
@@ -30,6 +41,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.title.setText(task.title);
         holder.deadline.setText(task.deadline);
         holder.checkBox.setChecked(task.completed);
+
+        // Delete button functionality
+        holder.deleteButton.setOnClickListener(v -> {
+            AppDatabase.getInstance(context).taskDataAccess().delete(task);
+            tasks.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, tasks.size());
+        });
     }
 
     @Override
@@ -40,12 +59,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView title, deadline;
         CheckBox checkBox;
+        ImageButton deleteButton;
 
         TaskViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.task_title);
             deadline = itemView.findViewById(R.id.task_deadline);
             checkBox = itemView.findViewById(R.id.task_checkbox);
+            deleteButton = itemView.findViewById(R.id.btn_delete);
         }
     }
 }
