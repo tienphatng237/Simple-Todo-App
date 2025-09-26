@@ -49,6 +49,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, tasks.size());
         });
+
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            task.completed = isChecked;
+            AppDatabase.getInstance(context).taskDataAccess().update(task);
+        });
+
     }
 
     @Override
