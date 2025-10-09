@@ -1,50 +1,54 @@
 package com.example.todoapp.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
 
 import com.example.todoapp.R;
-import com.example.todoapp.adapter.TaskAdapter;
-import com.example.todoapp.database.AppDatabase;
-import com.example.todoapp.model.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.List;
+import com.example.todoapp.ui.fragments.FragmentCalendar;
+import com.example.todoapp.ui.fragments.FragmentSettings;
+import com.example.todoapp.ui.fragments.FragmentTaskList;
+import com.example.todoapp.util.ThemeManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    private TaskAdapter adapter;
-    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (ThemeManager.isDarkMode(this)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        setSupportActionBar(findViewById(R.id.toolbar));
+        getSupportActionBar().setTitle("ToDoApp");
 
-        // Call loadTasks() the first time
-        loadTasks();
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+        bottomNav.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment;
+            int id = item.getItemId();
 
-        FloatingActionButton fab = findViewById(R.id.fab_add);
-        fab.setOnClickListener(v -> {
-            startActivity(new Intent(this, AddTaskActivity.class));
+            if (id == R.id.nav_tasks) {
+                selectedFragment = new FragmentTaskList();
+            } else if (id == R.id.nav_calendar) {
+                selectedFragment = new FragmentCalendar();
+            } else {
+                selectedFragment = new FragmentSettings();
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, selectedFragment)
+                    .commit();
+
+            return true;
         });
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Each time returning to this screen, reload the list
-        loadTasks();
-    }
-
-    private void loadTasks() {
-        List<Task> tasks = AppDatabase.getInstance(this).taskDataAccess().getAllTasks();
-        adapter = new TaskAdapter(this, tasks);
-        recyclerView.setAdapter(adapter);
+        bottomNav.setSelectedItemId(R.id.nav_tasks);
     }
 }

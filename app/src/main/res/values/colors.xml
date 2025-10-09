@@ -1,6 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="task_card_bg">#E3F2FD</color> <!-- xanh nhạt -->
-    <color name="task_title">#0D47A1</color>   <!-- xanh đậm -->
-    <color name="task_deadline">#546E7A</color> <!-- xám lạnh -->
-    <color name="fab_blue">#1976D2</color> <!-- xanh primary cho nút + -->
+
+    <!-- Chủ đề chính -->
+    <color name="colorPrimary">#0969DA</color>
+    <color name="colorPrimaryVariant">#0550AE</color>
+    <color name="colorPrimaryDark">#03356B</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <!-- Nền sáng -->
+    <color name="colorBackground">#F6F8FA</color>
+    <color name="backgroundLight">#FFFFFF</color>
+    <color name="backgroundColor">#FFFFFF</color>
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="cardLight">#FFFFFF</color>
+
+    <!-- Văn bản -->
+    <color name="textPrimary">#1F2328</color>
+    <color name="textSecondary">#656D76</color>
+    <color name="colorOnBackground">#000000</color>
+
+    <!-- Các tông phụ -->
+    <color name="teal_600">#2EA043</color>
+    <color name="teal_700">#238636</color>
+    <color name="blue_200">#79C0FF</color>
+    <color name="blue_500">#0969DA</color>
+    <color name="blue_700">#0550AE</color>
+
+    <!-- Xám và trắng -->
+    <color name="gray">#D0D7DE</color>
+    <color name="gray_500">#9B9B9B</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- Popup -->
+    <color name="popup_bg_light">#FFFFFF</color>
+    <color name="popup_text_light">#1F2328</color>
+    <color name="popupBackgroundLight">#FFFFFF</color>
+    <color name="popupTextLight">#1F2328</color>
+
+    <!-- Khác -->
+    <color name="red">#CF222E</color>
+    <color name="primaryColor">#0969DA</color>
+    <color name="accentColor">#218BFF</color>
+    <color name="darkBackground">#121212</color>
+
+    <!-- Popup màu nền & chữ (Dark Mode - backup để tránh lỗi biên dịch) -->
+    <color name="popupBackgroundDark">#161B22</color>
+    <color name="popupTextDark">#C9D1D9</color>
+
 </resources>

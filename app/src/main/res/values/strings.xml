@@ -2,4 +2,6 @@
     <string name="app_name">ToDoApp</string>
     <string name="task_list">Task list</string>
     <string name="add_new_task">Add new task</string>
+    <string name="add_task">Thêm công việc</string>
+    <string name="delete_task">Xóa công việc</string>
 </resources>

@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_export_json"
+        android:title="Export JSON"
+        android:icon="@drawable/ic_export"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_switch_theme"
+        android:title="Đổi theme"
+        android:icon="@drawable/ic_theme"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_logout"
+        android:title="Đăng xuất"
+        android:icon="@drawable/ic_logout"
+        android:showAsAction="never" />
+</menu>

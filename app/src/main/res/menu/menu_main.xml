@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_export"
+        android:title="Export JSON"
+        android:icon="@android:drawable/ic_menu_save"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_toggle_theme"
+        android:title="Đổi theme"
+        android:icon="@android:drawable/ic_menu_day"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_export"
+        android:title="Export JSON"
+        android:icon="@drawable/ic_export"
+        android:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_logout"
+        android:title="Logout"
+        android:icon="@android:drawable/ic_lock_power_off"
+        android:showAsAction="never" />
+</menu>

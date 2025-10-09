@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Chủ đề tối - tông lạnh giống GitHub -->
+    <color name="colorPrimary">#1F6FEB</color>
+    <color name="colorPrimaryVariant">#1158C7</color>
+    <color name="colorPrimaryDark">#0A3069</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <!-- Nền tối -->
+    <color name="colorBackground">#0D1117</color>
+    <color name="backgroundColor">#0D1117</color>
+    <color name="backgroundLight">#161B22</color>
+    <color name="cardBackground">#161B22</color>
+    <color name="cardLight">#1C2128</color>
+    <color name="darkBackground">#0D1117</color>
+
+    <!-- Văn bản -->
+    <color name="textPrimary">#C9D1D9</color>
+    <color name="textSecondary">#8B949E</color>
+    <color name="colorOnBackground">#FFFFFF</color>
+
+    <!-- Tông phụ & nhấn -->
+    <color name="blue_200">#79C0FF</color>
+    <color name="blue_500">#58A6FF</color>
+    <color name="blue_700">#1F6FEB</color>
+    <color name="teal_600">#2EA043</color>
+    <color name="teal_700">#238636</color>
+
+    <!-- Xám và trắng -->
+    <color name="gray">#30363D</color>
+    <color name="gray_500">#484F58</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- Popup -->
+    <color name="popup_bg_light">#161B22</color>
+    <color name="popup_text_light">#C9D1D9</color>
+    <color name="popupBackgroundDark">#161B22</color>
+    <color name="popupTextDark">#C9D1D9</color>
+
+    <!-- Khác -->
+    <color name="red">#F85149</color>
+    <color name="accentColor">#2D81F7</color>
+
+</resources>

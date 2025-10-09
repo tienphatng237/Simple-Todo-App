@@ -1,103 +1,107 @@
 package com.example.todoapp.ui;
 
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
-import android.app.DatePickerDialog;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.todoapp.R;
 import com.example.todoapp.database.AppDatabase;
 import com.example.todoapp.model.Task;
 
-import java.util.Calendar;
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.concurrent.Executors;
 
 public class EditTaskActivity extends AppCompatActivity {
 
-    private EditText etTitle, etDesc, etDeadline;
-    private Button btnUpdate;
-    private Task task;  // Task being edited
+    private EditText etTitle, etDescription, etDeadline;
+    private Button btnSave, btnSelectImage;
+    private ImageView imgPreview;
+    private AppDatabase db;
+    private Task currentTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_task); // reuse add_task layout
+        setContentView(R.layout.activity_edit_task);
 
         etTitle = findViewById(R.id.et_title);
-        etDesc = findViewById(R.id.et_description);
+        etDescription = findViewById(R.id.et_description);
         etDeadline = findViewById(R.id.et_deadline);
-        btnUpdate = findViewById(R.id.btn_save);
-        btnUpdate.setText("Update Task");
+        btnSave = findViewById(R.id.btn_save);
+        btnSelectImage = findViewById(R.id.btn_select_image);
+        imgPreview = findViewById(R.id.img_preview);
 
-        etDeadline.setFocusable(false);
-        etDeadline.setOnClickListener(v -> showDatePicker());
-
-
-        // Get taskId from Intent
-        int taskId = getIntent().getIntExtra("taskId", -1);
+        db = AppDatabase.getInstance(this);
+        int taskId = getIntent().getIntExtra("task_id", -1);
 
         if (taskId != -1) {
-            // Get Task from DB
-            task = AppDatabase.getInstance(this).taskDataAccess().getTaskById(taskId);
-
-            if (task != null) {
-                etTitle.setText(task.title);
-                etDesc.setText(task.description);
-                etDeadline.setText(task.deadline);
-            } else {
-                Toast.makeText(this, "Task not found", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }
-        } else {
-            Toast.makeText(this, "Invalid task", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
+            Executors.newSingleThreadExecutor().execute(() -> {
+                currentTask = db.taskDao().getTaskById(taskId);
+                runOnUiThread(() -> {
+                    if (currentTask != null) {
+                        etTitle.setText(currentTask.getTitle());
+                        etDescription.setText(currentTask.getDescription());
+                        etDeadline.setText(currentTask.getDeadline());
+                        if (currentTask.getImagePath() != null)
+                            imgPreview.setImageURI(Uri.fromFile(new File(currentTask.getImagePath())));
+                    }
+                });
+            });
         }
 
-        // Update task
-        btnUpdate.setOnClickListener(v -> {
-            String title = etTitle.getText().toString().trim();
-            String desc = etDesc.getText().toString().trim();
-            String deadline = etDeadline.getText().toString().trim();
+        btnSelectImage.setOnClickListener(v -> imagePicker.launch("image/*"));
+        btnSave.setOnClickListener(v -> saveChanges());
+    }
 
-            if (TextUtils.isEmpty(title) || TextUtils.isEmpty(desc) || TextUtils.isEmpty(deadline)) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-                return;
+    private final ActivityResultLauncher<String> imagePicker =
+            registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+                if (uri != null && currentTask != null) {
+                    String savedPath = saveImageToInternalStorage(uri);
+                    currentTask.setImagePath(savedPath);
+                    imgPreview.setImageURI(Uri.fromFile(new File(savedPath)));
+                }
+            });
+
+    private String saveImageToInternalStorage(Uri uri) {
+        try {
+            String fileName = "task_edit_" + System.currentTimeMillis() + ".jpg";
+            File file = new File(getFilesDir(), fileName);
+            try (InputStream in = getContentResolver().openInputStream(uri);
+                 OutputStream out = new FileOutputStream(file)) {
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = in.read(buffer)) > 0) out.write(buffer, 0, len);
             }
+            return file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-            task.title = title;
-            task.description = desc;
-            task.deadline = deadline;
+    private void saveChanges() {
+        if (currentTask == null) return;
 
-            AppDatabase.getInstance(this).taskDataAccess().update(task);
+        currentTask.setTitle(etTitle.getText().toString());
+        currentTask.setDescription(etDescription.getText().toString());
+        currentTask.setDeadline(etDeadline.getText().toString());
 
-            Toast.makeText(this, "Task updated!", Toast.LENGTH_SHORT).show();
-            finish();
+        Executors.newSingleThreadExecutor().execute(() -> {
+            db.taskDao().update(currentTask);
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Đã cập nhật công việc!", Toast.LENGTH_SHORT).show();
+                finish();
+            });
         });
     }
-
-    private void showDatePicker() {
-        final Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, year1, month1, dayOfMonth) -> {
-                    // Format yyyy-MM-dd
-                    String date = String.format("%04d-%02d-%02d", year1, (month1 + 1), dayOfMonth);
-                    etDeadline.setText(date);
-                }, year, month, day);
-
-        // Do not allow selecting past dates
-        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-
-        datePickerDialog.show();
-    }
-
 }
