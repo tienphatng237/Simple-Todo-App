@@ -44,4 +44,9 @@ public class TaskRepository {
             if (onDone != null) onDone.run();
         });
     }
+
+    // ✅ Thêm mới cho EditTaskActivity
+    public Task getTaskById(int taskId) {
+        return taskDao.getTaskById(taskId);
+    }
 }

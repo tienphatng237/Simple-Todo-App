@@ -12,14 +12,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.todoapp.R;
 import com.example.todoapp.model.Task;
-import com.example.todoapp.util.FileUtil;
 import com.example.todoapp.viewmodel.TaskViewModel;
+
+import java.util.concurrent.Executors;
 
 /**
  * EditTaskActivity
  * -------------------------------
  * - Dùng để chỉnh sửa công việc.
- * - Liên kết với layout activity_edit_task.xml (đã kiểm tra ID).
+ * - Hiển thị dữ liệu sẵn có và cho phép sửa lại.
  */
 public class EditTaskActivity extends AppCompatActivity {
 
@@ -35,7 +36,7 @@ public class EditTaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_task);
 
-        // Bind View
+        // --- Ánh xạ View ---
         etTitle = findViewById(R.id.et_title);
         etDescription = findViewById(R.id.et_description);
         etDeadline = findViewById(R.id.et_deadline);
@@ -43,30 +44,42 @@ public class EditTaskActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btn_save);
         btnSelectImage = findViewById(R.id.btn_select_image);
 
-        // ViewModel
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
-        // Nhận Task từ Intent
-        if (getIntent().hasExtra("task")) {
-            currentTask = (Task) getIntent().getSerializableExtra("task");
-            if (currentTask != null) {
-                etTitle.setText(currentTask.getTitle());
-                etDescription.setText(currentTask.getDescription());
-                etDeadline.setText(currentTask.getDeadline());
-
-                if (currentTask.getImagePath() != null) {
-                    FileUtil.loadImageInto(imgPreview, currentTask.getImagePath());
-                }
-            }
+        // --- Nhận taskId từ Intent ---
+        int taskId = getIntent().getIntExtra("task_id", -1);
+        if (taskId == -1) {
+            Toast.makeText(this, "Không tìm thấy công việc!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
-        // Sự kiện chọn ảnh
-        btnSelectImage.setOnClickListener(v -> {
-            // TODO: Giai đoạn 5 sẽ thay bằng SAF
-            Toast.makeText(this, "Chức năng chọn ảnh sẽ thêm ở giai đoạn sau", Toast.LENGTH_SHORT).show();
+        // --- Lấy Task từ DB ---
+        Executors.newSingleThreadExecutor().execute(() -> {
+            currentTask = taskViewModel.getTaskById(taskId);
+            if (currentTask != null) {
+                runOnUiThread(() -> {
+                    etTitle.setText(currentTask.getTitle());
+                    etDescription.setText(currentTask.getDescription());
+                    etDeadline.setText(currentTask.getDeadline());
+
+                    if (currentTask.getImagePath() != null && !currentTask.getImagePath().isEmpty()) {
+                        try {
+                            imgPreview.setImageURI(Uri.parse(currentTask.getImagePath()));
+                        } catch (Exception e) {
+                            imgPreview.setImageResource(R.drawable.ic_image_placeholder);
+                        }
+                    }
+                });
+            }
         });
 
-        // Sự kiện lưu thay đổi
+        // --- Nút chọn ảnh (chưa thêm mới) ---
+        btnSelectImage.setOnClickListener(v ->
+                Toast.makeText(this, "Chức năng chọn ảnh mới sẽ thêm ở giai đoạn sau", Toast.LENGTH_SHORT).show()
+        );
+
+        // --- Nút lưu thay đổi ---
         btnSave.setOnClickListener(v -> {
             if (currentTask == null) {
                 Toast.makeText(this, "Không tìm thấy công việc để cập nhật", Toast.LENGTH_SHORT).show();
@@ -77,7 +90,6 @@ public class EditTaskActivity extends AppCompatActivity {
             currentTask.setDescription(etDescription.getText().toString().trim());
             currentTask.setDeadline(etDeadline.getText().toString().trim());
 
-            // Giai đoạn sau sẽ cập nhật lại imagePath nếu chọn ảnh mới
             taskViewModel.update(currentTask, () -> runOnUiThread(() -> {
                 Toast.makeText(this, "Đã cập nhật công việc!", Toast.LENGTH_SHORT).show();
                 finish();

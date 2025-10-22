@@ -57,12 +57,22 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.textTaskTitle.setText(task.getTitle());
         holder.textTaskDeadline.setText(task.getDeadline());
 
+        // Hiển thị ảnh nếu có, ngược lại hiển thị ảnh placeholder
         if (task.getImagePath() != null && !task.getImagePath().isEmpty()) {
-            File file = new File(task.getImagePath());
-            if (file.exists())
-                holder.imgTask.setImageURI(Uri.fromFile(file));
-            else
+            String path = task.getImagePath();
+            try {
+                if (path.startsWith("content://")) {
+                    holder.imgTask.setImageURI(Uri.parse(path));
+                } else {
+                    java.io.File file = new java.io.File(path);
+                    if (file.exists())
+                        holder.imgTask.setImageURI(Uri.fromFile(file));
+                    else
+                        holder.imgTask.setImageResource(R.drawable.ic_image_placeholder);
+                }
+            } catch (Exception e) {
                 holder.imgTask.setImageResource(R.drawable.ic_image_placeholder);
+            }
         } else {
             holder.imgTask.setImageResource(R.drawable.ic_image_placeholder);
         }

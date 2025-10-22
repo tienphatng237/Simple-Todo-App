@@ -33,4 +33,9 @@ public class TaskViewModel extends AndroidViewModel {
     public void delete(Task task, Runnable onDone) {
         repository.delete(task, onDone);
     }
+
+    // ✅ Thêm mới để EditTaskActivity truy cập được
+    public Task getTaskById(int taskId) {
+        return repository.getTaskById(taskId);
+    }
 }

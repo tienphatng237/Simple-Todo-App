@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 
 import com.example.todoapp.R;
 import com.example.todoapp.model.Task;
@@ -32,6 +35,8 @@ public class AddTaskActivity extends AppCompatActivity {
     private Uri selectedImageUri;
     private String username;
     private TaskViewModel taskViewModel;
+    // --- ActivityResultLauncher cho chọn ảnh ---
+    private ActivityResultLauncher<String> pickImageLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,21 @@ public class AddTaskActivity extends AppCompatActivity {
 
         // --- ViewModel ---
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
+
+        // --- Cấu hình chọn ảnh ---
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        selectedImageUri = uri;
+                        imgPreview.setImageURI(uri);
+                    } else {
+                        Toast.makeText(this, "Không chọn được ảnh", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        btnSelectImage.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
 
         // --- Gắn sự kiện chọn ngày cho edtDeadline ---
         edtDeadline.setFocusable(false);
@@ -84,7 +104,6 @@ public class AddTaskActivity extends AppCompatActivity {
                 finish();
             }));
         });
-
     }
 
     // --- Hiển thị DatePickerDialog ---
